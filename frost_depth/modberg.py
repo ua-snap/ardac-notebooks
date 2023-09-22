@@ -22,7 +22,7 @@ def compute_volumetric_latent_heat_of_fusion(dry_ro, wc_pct):
 
 
 def compute_frozen_volumetric_specific_heat(dry_ro, wc_pct):
-    """Compute quantity of heat required to change temperature of a frozen unit volume of soil by 1°F. The specific heat of soil solids is 0.17 (BTU/lb • °F) for most soils.
+    """Compute quantity of heat required to change temperature of a frozen unit volume of soil by 1°F. Specific heat of soil solids is 0.17 (BTU/lb • °F) for most soils.
 
     Args:
         dry_ro: soil dry density (lbs per cubic foot)
