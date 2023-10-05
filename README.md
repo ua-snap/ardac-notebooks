@@ -1,2 +1,3 @@
 # ardac-notebooks
-A home for ARDAC programming notebooks + supporting code and documentation.
+
+A home for Arctic-EDS and ARDAC computational notebooks, modules, and supporting documentation.
