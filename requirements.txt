@@ -1,0 +1,12 @@
+# Core modules (mandatory)
+jupyterlite-core==0.1.2
+jupyterlab~=3.5.1
+jupyterlite-pyodide-kernel
+jupyterlab-open-url-parameter
+
+# JupyterLab: dark theme
+jupyterlab-night
+
+# Python: libraries (optional)
+pandas
+ipywidgets
