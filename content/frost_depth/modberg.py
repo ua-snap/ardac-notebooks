@@ -3,7 +3,18 @@ A module to compute Modified Berggren Frost Depth. This module uses Imperial uni
 """
 import numpy as np
 import requests
+import os
+import warnings
+warnings.filterwarnings("ignore")
+
+import micropip
+micropip.install("pyodide-http")
+import pyodide_http
+pyodide_http.patch_all()
 import pandas as pd
+
+
+base_url = os.environ["API_BASE"]
 
 
 def compute_volumetric_latent_heat_of_fusion(dry_ro, wc_pct):
@@ -87,19 +98,15 @@ def get_projected_mat_from_api(lat, lon, model, scenario, year_start, year_end):
         mat_deg_F: mean annual temperature for the given model and scenario, averaged over the summary period
     """
     # make the request
-    api_url = f"https://earthmaps.io/mmm/temperature/all/{lat}/{lon}"
-    resp = requests.get(api_url).json()[model][scenario]
-
-    # shape response and get the mean for the summary period
-    df = pd.json_normalize(resp, sep="_").T
-    years = [int(j.split("_")[0]) for j in df.index.values]
-    df["year"] = years
-    df.set_index("year", inplace=True)
-    mean_temp_deg_C = df.loc[year_start:year_end].mean()
-
-    # convert from C to F
-    mat_deg_F = (mean_temp_deg_C * 1.8) + 32
-    return float(round(mat_deg_F.values[0], 1))
+    api_url = f"http://127.0.0.1:5000/temperature/{lat}/{lon}/{year_start}/{year_end}?format=csv"
+    df = pd.read_csv(api_url, header=3)
+    
+    # get the mean of the mean annual temperature values for all years in the time span, for the specific climate future
+    mat_deg_C = df.groupby(['model', 'scenario'])['tas'].mean().loc[model][scenario]
+    
+    # convert from C to F and from array to float
+    mat_deg_F = (mat_deg_C * 1.8) + 32
+    return float(round(mat_deg_F, 1))
 
 
 def get_projected_freezing_index_from_api(lat, lon, model, year_start, year_end):
@@ -109,22 +116,18 @@ def get_projected_freezing_index_from_api(lat, lon, model, year_start, year_end)
         lat: valid SNAP Data API point request latitude
         lon: valid SNAP Data API point request longitude
         model (str): one of [GFDL-CM3, NCAR-CCSM4]
-        year_start (int): start year for summary period, 2007 through 2100
+        year_start (int): start year for summary period, 2007 through 2099
         year_end (int): end year for summary period, 2007 through 2100
     Returns:
-        freezing_index_degFdays: mean annual freezing index for the given RCP 8.5 model, averaged over the summary period
+        freezing_index_degFdays: annual freezing index for the given RCP 8.5 model, averaged over the year range
     """
-    api_url = f"https://earthmaps.io/mmm/degree_days/freezing_index/all/{lat}/{lon}"
-    resp = requests.get(api_url).json()[model]
+    api_url = f"{base_url}degree_days/freezing_index/{lat}/{lon}/{year_start}/{year_end}?format=csv"
+    df = pd.read_csv(api_url, header=3)
 
-    # shape response and get the mean for the summary period
-    df = pd.json_normalize(resp, sep="_").T
-    years = [int(j.split("_")[0]) for j in df.index.values]
-    df["year"] = years
-    df.set_index("year", inplace=True)
-    freezing_index_degFdays = df.loc[year_start:year_end].mean().values[0]
-
+    # get the mean for the climate future
+    freezing_index_degFdays = df.groupby(["model"])["dd"].mean().loc[model]
     return int(round(freezing_index_degFdays))
+
 
 
 def compute_multiyear_v_s(mat):
@@ -222,7 +225,7 @@ def compute_depth_of_freezing(coeff, k_avg, nFI, L):
     return round(x, 1)
 
 
-def compute_modified_bergrenn(
+def compute_modified_berggren(
     dry_ro,
     wc_pct,
     d,
