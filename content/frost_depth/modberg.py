@@ -3,7 +3,6 @@ A module to compute Modified Berggren Frost Depth. This module uses Imperial uni
 """
 import numpy as np
 import requests
-import os
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -13,8 +12,7 @@ import pyodide_http
 pyodide_http.patch_all()
 import pandas as pd
 
-
-base_url = os.environ["API_BASE"]
+base_url = "http://127.0.0.1:5000/"
 
 
 def compute_volumetric_latent_heat_of_fusion(dry_ro, wc_pct):

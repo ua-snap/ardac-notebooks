@@ -1,9 +1,0 @@
-name: ardac_notebooks
-channels:
-  - conda-forge
-  - defaults
-dependencies:
-  - ipywidgets
-  - jupyterlab
-  - pandas
-prefix: /Users/cparr/miniconda3/envs/ardac_notebooks
