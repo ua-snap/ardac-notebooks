@@ -9,4 +9,5 @@ jupyterlab-night
 
 # Python: libraries (optional)
 pandas
+numpy
 ipywidgets
