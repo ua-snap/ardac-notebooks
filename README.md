@@ -10,9 +10,11 @@ See `.github/workflows` to check out what this deploy Github Action looks like i
 
 I guess the nice thing here is that deploying is super easy, just push to main :rocket:
 
-## Development Story
+## Testing & Development Story
 
-Development is a lil' tricky because of how JupyterLite and GitHub Pages handle HTTP (vs. HTTPS) requests and because of how JupyterLite can build with an environment distinct from the local development environment.
+### Testing
+
+Testing is a lil' tricky because of how JupyterLite and GitHub Pages handle HTTP (vs. HTTPS) requests and because of how JupyterLite can build with an environment distinct from the local development environment.
 
 To get started, I recommend the following steps:
 
@@ -50,6 +52,11 @@ You should land on a JupyterLab interface that looks pretty much like any other 
 Test your changes to notebooks using this workflow! This has a few advantages:
 
 - We are testing the JupyterLite build process each time, and not just the local notebook logic.
-- GitHub Pages isn't intended for dev / prod splits unless twin repos are used...maintaining one repo feels like enough of a challenge so we want to avoid that.
-- When you test your changes you are running the same Web Assembly that the end user will be testing.
+- GitHub Pages isn't intended for dev / prod splits unless twin repos are used...and maintaining one repo feels like enough of a challenge so we want to avoid that.
+- When you test your changes you are running the same WebAssembly that the end user will be executing.
 - You can do all this without pushing to `main`.
+- You can test notebooks against development API instances like `http://staging.earthmaps.io`.
+
+### Modifying Notebooks
+
+OK, say you have some notebook and you want to develop a new feature or make some edits. How does that work? Well, good question because when you run the testing workflow above, your changes won't be saved to the source notebook(s) in the `content` directory. The easiest thing to do is just follow a normal notebook development path (run and edit the notebook outside of the JupyterLite umbrella), save your changes, and then follow the testing steps again (rebuild the JupyterLite bundle, serve it, and test in your browser). I think the only odd thing that could potentially happen here is an environment snag between the the development environment and the environment JupyterLite builds, but I haven't hit that in practice and those _should_ be not-too-horrible to resolve.
