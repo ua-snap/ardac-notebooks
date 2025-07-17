@@ -19,17 +19,17 @@ Testing is a lil' tricky because of how JupyterLite and GitHub Pages handle HTTP
 To get started, I recommend the following steps:
 
 - First, checkout a new branch. Seems obvious, but I'm stating the obvious because `main` is lava here.
-- Create / activate the `py310forEDS.yml` conda environment.
+- Create / activate the `local_dev_environment.yml` conda environment.
 
 ```sh
-conda env create -f py310forEDD.yml
+conda env create -f local_dev_environment.yml
 ```
 
 ```sh
-conda activate py310forEDS
+conda activate eds_modules_local_dev_311
 ```
 
-Note that we are matching the major version of Python specified in the `.github/workflows/deploy.yml` spec. This conda env is basically our local umbrella environment that lets us touch JupyterLite. The JupyterLite environment / package installation is spec'd by `requirements.txt`.
+Note that we are matching the major version of Python specified in the `.github/workflows/deploy.yml` spec. This conda env is basically our local umbrella environment that lets us touch JupyterLite. The JupyterLite environment / package installation is spec'd by `requirements.txt`. There may be some minor version mismatches between the local development environment specified by the .yml file and the production environment built from `requirements.txt`. I think this is OK - the current prod environment works and so we should leave it alone as much as possible, but our local environments are more fungible.
 
 - Next, build the JupyterLite site like this:
 
